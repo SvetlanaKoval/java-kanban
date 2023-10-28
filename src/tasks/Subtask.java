@@ -1,20 +1,19 @@
+package tasks;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
 
-    private final Epic epic;
+    private final int epicId;
 
-    public Subtask(String name, String description, Epic epic) {
+    public Subtask(String name, String description, int epicId) {
         super(name, description);
-        if (epic == null) {
-            throw new RuntimeException("У этой подзадачи нет основной задачи. Уточните данные");
-        }
-        this.epic = epic;
-        epic.getSubtasksId().add(getId());
+        this.epicId = epicId;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public int getEpicId() {
+
+        return epicId;
     }
 
     @Override
@@ -22,12 +21,12 @@ public class Subtask extends Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Subtask subtask = (Subtask) o;
-        return super.equals(o) && Objects.equals(epic, subtask.epic);
+        return super.equals(o) && Objects.equals(epicId, subtask.epicId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), epic);
+        return Objects.hash(super.hashCode(), epicId);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class Subtask extends Task {
                 ", description='" + this.getDescription() + '\'' +
                 ", id=" + this.getId() +
                 ", status= " + this.getStatus() +
-                ", epic= " + this.epic.getName() +
+                ", epicId= " + this.epicId +
                 '}';
     }
 }

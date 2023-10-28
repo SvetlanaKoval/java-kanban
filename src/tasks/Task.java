@@ -1,19 +1,23 @@
+package tasks;
+
 import java.util.Objects;
 
 public class Task {
 
-    private static int ID_COUNTER = 1;
 
     private Integer id;
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private Status status;
+
+    public Task() {
+
+    }
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
-        incrementAndSetId();
     }
 
     public String getName() {
@@ -28,16 +32,17 @@ public class Task {
         return id != null ? id : 0;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Status getStatus() {
         return status;
     }
 
-    protected void setStatus(Status status) {
-        this.status = status;
-    }
+    public void setStatus(Status status) {
 
-    private void incrementAndSetId() {
-        this.id = ID_COUNTER++;
+        this.status = status;
     }
 
     @Override
@@ -51,6 +56,7 @@ public class Task {
 
     @Override
     public int hashCode() {
+
         return Objects.hash(name, description, id, status);
     }
 
