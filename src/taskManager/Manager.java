@@ -28,12 +28,13 @@ public class Manager {
 
     public void removeAllEpics() {
         epics.clear();
+        subtasks.clear();
     }
 
     public void removeAllSubtasks() {
         for (Epic epic : epics.values()) {
             epic.removeSubtasks();
-            updateEpic(epic);
+            setEpicStatus(epic);
         }
         subtasks.clear();
     }
@@ -68,7 +69,7 @@ public class Manager {
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         epic.addSubtask(subtask.getId());
-        updateEpic(epic);
+        setEpicStatus(epic);
     }
 
     public void addTask(Task task) {
@@ -78,7 +79,6 @@ public class Manager {
 
     public void updateEpic(Epic epic) {
         checkId(epic.getId(), epics.keySet());
-        setEpicStatus(epic);
         epics.put(epic.getId(), epic);
     }
 
@@ -86,7 +86,7 @@ public class Manager {
         checkId(subtask.getId(), subtasks.keySet());
         checkId(subtask.getEpicId(), epics.keySet());
         subtasks.put(subtask.getId(), subtask);
-        updateEpic(epics.get(subtask.getEpicId()));
+        setEpicStatus(epics.get(subtask.getEpicId()));
     }
 
     public void updateTask(Task task) {
@@ -97,8 +97,8 @@ public class Manager {
     public void removeEpicById(int id) {
         checkId(id, epics.keySet());
         List<Integer> subtaskList = epics.get(id).getSubtasks();
-        for (Integer i : subtaskList) {
-            subtasks.remove(i);
+        for (Integer subtaskId : subtaskList) {
+            subtasks.remove(subtaskId);
         }
         epics.remove(id);
     }
@@ -109,7 +109,7 @@ public class Manager {
         Epic epic = epics.get(epicId);
         epic.removeSubtask(id);
         subtasks.remove(id);
-        updateEpic(epic);
+        setEpicStatus(epic);
     }
 
     public void removeTaskById(int id) {
@@ -119,8 +119,8 @@ public class Manager {
 
     public List<Subtask> getSubtasksByEpic(Epic epic) {
         List<Subtask> subtaskList = new ArrayList<>();
-        for (Integer id : epic.getSubtasks()) {
-            subtaskList.add(subtasks.get(id));
+        for (Integer subtaskId : epic.getSubtasks()) {
+            subtaskList.add(subtasks.get(subtaskId));
         }
         return subtaskList;
     }
