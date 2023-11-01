@@ -13,16 +13,20 @@ public class Epic extends Task {
         subtasks = new ArrayList<>();
     }
 
-    public List<Integer> getSubtasks() {return subtasks;
+    public List<Integer> getSubtasks() {
+        return subtasks;
     }
 
-    public void addSubtask(int id) {subtasks.add(id);
+    public void addSubtask(int id) {
+        subtasks.add(id);
     }
 
-    public void removeSubtask(int id) {subtasks.remove((Integer) id);
+    public void removeSubtask(int id) {
+        subtasks.remove((Integer) id);
     }
 
-    public void removeSubtasks() {subtasks.clear();
+    public void removeSubtasks() {
+        subtasks.clear();
     }
 
     @Override
@@ -34,7 +38,8 @@ public class Epic extends Task {
     }
 
     @Override
-    public int hashCode() {return Objects.hash(super.hashCode(), subtasks);
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtasks);
     }
 
     @Override

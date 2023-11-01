@@ -15,29 +15,35 @@ public class Task {
         this.status = Status.NEW;
     }
 
-    public String getName() {return name;
+    public String getName() {
+        return name;
     }
 
-    public void setName(String name) {this.name = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDescription() {return description;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescription(String description) {this.description = description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getId() {return id != null ? id : 0;
+    public int getId() {
+        return id != null ? id : 0;
     }
 
-    public void setId(Integer id) {this.id = id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Status getStatus() {return status;
+    public Status getStatus() {
+        return status;
     }
 
     public void setStatus(Status status) {
-
         this.status = status;
     }
 
@@ -51,7 +57,8 @@ public class Task {
     }
 
     @Override
-    public int hashCode() {return Objects.hash(name, description, id, status);
+    public int hashCode() {
+        return Objects.hash(name, description, id, status);
     }
 
     @Override

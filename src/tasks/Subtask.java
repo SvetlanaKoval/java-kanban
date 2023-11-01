@@ -24,7 +24,8 @@ public class Subtask extends Task {
     }
 
     @Override
-    public int hashCode() {return Objects.hash(super.hashCode(), epicId);
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), epicId);
     }
 
     @Override
