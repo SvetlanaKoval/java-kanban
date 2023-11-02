@@ -1,4 +1,4 @@
-package taskManager;
+package managers;
 
 import tasks.Epic;
 import tasks.Status;
@@ -7,30 +7,38 @@ import tasks.Task;
 
 import java.util.*;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager {
 
     private int generatorId = 1;
+
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
 
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
+
+    @Override
     public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
+    @Override
     public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
+    @Override
     public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
+    @Override
     public void removeAllEpics() {
         epics.clear();
         subtasks.clear();
     }
 
+    @Override
     public void removeAllSubtasks() {
         for (Epic epic : epics.values()) {
             epic.removeSubtasks();
@@ -39,30 +47,42 @@ public class Manager {
         subtasks.clear();
     }
 
+    @Override
     public void removeAllTasks() {
         tasks.clear();
     }
 
+    @Override
     public Epic getEpicById(int id) {
         checkId(id, epics.keySet());
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
+    @Override
     public Subtask getSubtaskById(int id) {
         checkId(id, subtasks.keySet());
-        return subtasks.get(id);
+        Subtask subtask = subtasks.get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
+    @Override
     public Task getTaskById(int id) {
         checkId(id, tasks.keySet());
-        return tasks.get(id);
+        Task task = tasks.get(id);
+        historyManager.add(task);
+        return task;
     }
 
+    @Override
     public void addEpic(Epic epic) {
         epic.setId(generateId());
         epics.put(epic.getId(), epic);
     }
 
+    @Override
     public void addSubtask(Subtask subtask) {
         checkId(subtask.getEpicId(), epics.keySet());
         subtask.setId(generateId());
@@ -72,16 +92,19 @@ public class Manager {
         setEpicStatus(epic);
     }
 
+    @Override
     public void addTask(Task task) {
         task.setId(generateId());
         tasks.put(task.getId(), task);
     }
 
+    @Override
     public void updateEpic(Epic epic) {
         checkId(epic.getId(), epics.keySet());
         epics.put(epic.getId(), epic);
     }
 
+    @Override
     public void updateSubtask(Subtask subtask) {
         checkId(subtask.getId(), subtasks.keySet());
         checkId(subtask.getEpicId(), epics.keySet());
@@ -89,11 +112,13 @@ public class Manager {
         setEpicStatus(epics.get(subtask.getEpicId()));
     }
 
+    @Override
     public void updateTask(Task task) {
         checkId(task.getId(), tasks.keySet());
         tasks.put(task.getId(), task);
     }
 
+    @Override
     public void removeEpicById(int id) {
         checkId(id, epics.keySet());
         List<Integer> subtaskList = epics.get(id).getSubtasks();
@@ -103,6 +128,7 @@ public class Manager {
         epics.remove(id);
     }
 
+    @Override
     public void removeSubtaskById(int id) {
         checkId(id, subtasks.keySet());
         int epicId = subtasks.get(id).getEpicId();
@@ -112,17 +138,24 @@ public class Manager {
         setEpicStatus(epic);
     }
 
+    @Override
     public void removeTaskById(int id) {
         checkId(id, tasks.keySet());
         tasks.remove(id);
     }
 
+    @Override
     public List<Subtask> getSubtasksByEpic(Epic epic) {
         List<Subtask> subtaskList = new ArrayList<>();
         for (Integer subtaskId : epic.getSubtasks()) {
             subtaskList.add(subtasks.get(subtaskId));
         }
         return subtaskList;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     private void checkId(int id, Set<Integer> idSet) {
