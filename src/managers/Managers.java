@@ -2,13 +2,8 @@ package managers;
 
 public abstract class Managers {
 
-    private TaskManager taskManager;
-
-    public TaskManager getDefault() {
-        if (taskManager == null) {
-            taskManager = new InMemoryTaskManager();
-        }
-        return taskManager;
+    public static TaskManager getDefault() {
+        return new InMemoryTaskManager();
     }
 
     public static HistoryManager getDefaultHistory() {
