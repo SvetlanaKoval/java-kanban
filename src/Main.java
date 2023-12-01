@@ -1,4 +1,4 @@
-import managers.InMemoryTaskManager;
+import managers.Managers;
 import managers.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
@@ -8,15 +8,15 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager inMemoryTaskManager = getTaskManager();
-//        inMemoryTaskManager.getTaskById(2);
-//        inMemoryTaskManager.getSubtaskById(6);
-//        inMemoryTaskManager.getEpicById(3);
-//        inMemoryTaskManager.getTaskById(1);
-//        inMemoryTaskManager.getSubtaskById(7);
-//        inMemoryTaskManager.getSubtaskById(5);
-//        inMemoryTaskManager.getEpicById(4);
-//        System.out.println("История просмотров: " + inMemoryTaskManager.getHistory());
-//        System.out.println("_____________________________");
+        inMemoryTaskManager.getTaskById(2);
+        inMemoryTaskManager.getSubtaskById(6);
+        inMemoryTaskManager.getEpicById(3);
+        inMemoryTaskManager.getTaskById(1);
+        inMemoryTaskManager.getSubtaskById(7);
+        inMemoryTaskManager.getSubtaskById(5);
+        inMemoryTaskManager.getEpicById(4);
+        System.out.println("История просмотров: " + inMemoryTaskManager.getHistory());
+        System.out.println("_____________________________");
 
         inMemoryTaskManager.getSubtaskById(6);
         inMemoryTaskManager.getTaskById(1);
@@ -50,7 +50,7 @@ public class Main {
     }
 
     private static TaskManager getTaskManager() {
-        TaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
         Task task1 = new Task("task1", "task1task1task1");
         Task task2 = new Task("task2", "task2task2task2");
         inMemoryTaskManager.addTask(task1);
