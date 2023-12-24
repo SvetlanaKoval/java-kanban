@@ -6,11 +6,13 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private final List<Integer> subtasks;
+    private final List<Integer> subtasks = new ArrayList<>();
+
+    public Epic() {
+    }
 
     public Epic(String name, String description) {
         super(name, description);
-        subtasks = new ArrayList<>();
     }
 
     public List<Integer> getSubtasks() {
@@ -27,6 +29,11 @@ public class Epic extends Task {
 
     public void removeSubtasks() {
         subtasks.clear();
+    }
+
+    @Override
+    public Type getType() {
+        return Type.EPIC;
     }
 
     @Override

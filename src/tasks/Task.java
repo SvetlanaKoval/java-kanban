@@ -9,6 +9,9 @@ public class Task {
     private String description;
     private Status status;
 
+    public Task() {
+    }
+
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
@@ -31,8 +34,8 @@ public class Task {
         this.description = description;
     }
 
-    public int getId() {
-        return id != null ? id : 0;
+    public Integer getId() {
+        return this.id;
     }
 
     public void setId(Integer id) {
@@ -45,6 +48,10 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Type getType() {
+        return Type.TASK;
     }
 
     @Override
