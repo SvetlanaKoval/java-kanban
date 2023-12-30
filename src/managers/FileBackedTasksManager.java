@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
+    public static final String FIELDS_NAME = "id,type,name,status,description,epic" + System.lineSeparator();
     private final File memory;
 
     public FileBackedTasksManager(File memory) {
@@ -22,26 +23,64 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() {
         try (FileWriter writer = new FileWriter(memory)) {
-            writer.write("id,type,name,status,description,epic" + System.lineSeparator());
+            writer.write(FIELDS_NAME);
             Map<Integer, Task> allTasks = unionAllTasks();
 
             for (Task task : allTasks.values()) {
                 String line = fromTaskToString(task);
                 writer.write(line + System.lineSeparator());
             }
-            writer.write(System.lineSeparator());
-            writer.write(historyToString(getHistoryManager()));
+            if (!getHistory().isEmpty()) {
+                writer.write(System.lineSeparator());
+                writer.write(historyToString(getHistoryManager()));
+            }
         } catch (IOException e) {
             throw new ManagerSaveException("Проблема сохранения в файл");
         }
     }
 
+    public static FileBackedTasksManager loadFromFile(File file) {
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
+        try {
+            List<String> allData = Files.readAllLines(Path.of(file.getPath()));
+
+            if (allData.size() <= 1) {
+                throw new ManagerSaveException("В файл загружена некорректная информация.");
+            }
+
+            int taskIndex = 1;
+            while (taskIndex < allData.size()) {
+                String line = allData.get(taskIndex);
+                if (line.isBlank()) {
+                    taskIndex++;
+                    break;
+                }
+                Task task = fileBackedTasksManager.fromStringToTask(line);
+                fileBackedTasksManager.generatorId = task.getId();
+                taskIndex++;
+            }
+
+            if (taskIndex < allData.size()) {
+                String historyLine = allData.get(taskIndex);
+                if (!historyLine.isBlank()) {
+                    List<Integer> tasksIdList = historyFromString(historyLine);
+                    fileBackedTasksManager.loadHistoryTasks(tasksIdList);
+                }
+            }
+        } catch (ManagerSaveException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fileBackedTasksManager;
+    }
+
     private String fromTaskToString(Task task) {
         List<String> taskData = new ArrayList<>();
-        taskData.add(String.valueOf(task.getId()));
-        taskData.add(String.valueOf(task.getType()));
+        taskData.add(task.getId().toString());
+        taskData.add(task.getType().toString());
         taskData.add(task.getName());
-        taskData.add(String.valueOf(task.getStatus()));
+        taskData.add(task.getStatus().toString());
         taskData.add(task.getDescription());
         if (task instanceof Subtask) {
             taskData.add(String.valueOf(((Subtask) task).getEpicId()));
@@ -80,7 +119,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         task.setDescription(taskData[4]);
     }
 
-    static String historyToString(HistoryManager manager) {
+    private static String historyToString(HistoryManager manager) {
         List<Task> hystoryList = manager.getHistory();
         List<String> tasksId = new ArrayList<>();
         for (Task task : hystoryList) {
@@ -89,7 +128,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return String.join(",", tasksId);
     }
 
-    static List<Integer> historyFromString(String value) {
+    private static List<Integer> historyFromString(String value) {
         String[] stringTaskId = value.split(",");
         List<Integer> taskId = new ArrayList<>();
         for (String stringId : stringTaskId) {
@@ -98,21 +137,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return taskId;
     }
 
-    static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
-        try {
-            List<String> allData = Files.readAllLines(Path.of(file.getPath()));
-            for (int taskIndex = 1; taskIndex < allData.size() - 2; taskIndex++) {
-                fileBackedTasksManager.fromStringToTask(allData.get(taskIndex));
+    private TreeMap<Integer, Task> unionAllTasks() {
+        TreeMap<Integer, Task> allTasks = new TreeMap<>();
+        allTasks.putAll(tasks);
+        allTasks.putAll(subtasks);
+        allTasks.putAll(epics);
+        return allTasks;
+    }
+
+    private void loadHistoryTasks(List<Integer> taskIdList) {
+        TreeMap<Integer, Task> allTasks = unionAllTasks();
+        for (Integer taskId : taskIdList) {
+            Task task = allTasks.get(taskId);
+            if (task != null) {
+                getHistoryManager().add(task);
             }
-            int historyLineIndex = allData.size() - 1;
-            List<Integer> tasksId = historyFromString(allData.get(historyLineIndex));
-            fileBackedTasksManager.loadHistoryTasks(tasksId);
-            fileBackedTasksManager.generatorId = fileBackedTasksManager.unionAllTasks().lastKey();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-        return fileBackedTasksManager;
     }
 
     @Override
@@ -206,23 +246,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void removeTaskById(int id) {
         super.removeTaskById(id);
         save();
-    }
-
-    private TreeMap<Integer, Task> unionAllTasks() {
-        TreeMap<Integer, Task> allTasks = new TreeMap<>();
-        allTasks.putAll(tasks);
-        allTasks.putAll(subtasks);
-        allTasks.putAll(epics);
-        return allTasks;
-    }
-
-    private void loadHistoryTasks(List<Integer> tasks) {
-        TreeMap<Integer, Task> allTasks = unionAllTasks();
-        for (Integer taskId : tasks) {
-            Task task = allTasks.get(taskId);
-            if (task != null) {
-                getHistoryManager().add(task);
-            }
-        }
     }
 }
