@@ -1,20 +1,37 @@
-package tasks;
+package main.java.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     private Integer id;
     private String name;
     private String description;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
+
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
     public Task() {
     }
 
     public Task(String name, String description) {
+        this(name, description, 0, null);
+    }
+
+    public Task(String name, String description, long duration) {
+        this(name, description, duration, null);
+    }
+
+    public Task(String name, String description, long duration, String startTime) {
         this.name = name;
         this.description = description;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = startTime != null ? LocalDateTime.parse(startTime, FORMATTER) : null;
         this.status = Status.NEW;
     }
 
@@ -54,6 +71,40 @@ public class Task {
         return Type.TASK;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = Duration.ofMinutes(duration);
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+        return startTime.plusMinutes(duration.toMinutes());
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        if (this.getStartTime().isBefore(o.getStartTime())) {
+            return -1;
+        } else if (this.getStartTime().isAfter(o.getStartTime())) {
+            return 1;
+        }
+        return 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,4 +128,5 @@ public class Task {
                 ", status=" + status +
                 '}';
     }
+
 }

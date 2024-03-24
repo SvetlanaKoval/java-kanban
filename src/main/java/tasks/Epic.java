@@ -1,5 +1,6 @@
-package tasks;
+package main.java.tasks;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.Objects;
 public class Epic extends Task {
 
     private final List<Integer> subtasks = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic() {
     }
@@ -37,6 +39,15 @@ public class Epic extends Task {
     }
 
     @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -59,4 +70,5 @@ public class Epic extends Task {
                 ", subtasks=" + subtasks +
                 '}';
     }
+
 }
