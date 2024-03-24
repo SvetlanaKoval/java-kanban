@@ -1,16 +1,20 @@
-package tasks;
+package main.java.tasks;
 
 import java.util.Objects;
 
 public class Subtask extends Task {
 
-    private int epicId;
+    private Integer epicId;
 
     public Subtask() {
     }
 
-    public Subtask(String name, String description, int epicId) {
-        super(name, description);
+    public Subtask(String name, String description, int epicId, long duration) {
+        this(name, description, epicId, duration, null);
+    }
+
+    public Subtask(String name, String description, int epicId, long duration, String startTime) {
+        super(name, description, duration, startTime);
         this.epicId = epicId;
     }
 
@@ -18,7 +22,7 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public int getEpicId() {
+    public Integer getEpicId() {
         return epicId;
     }
 
@@ -50,4 +54,5 @@ public class Subtask extends Task {
                 ", epicId= " + this.epicId +
                 '}';
     }
+
 }

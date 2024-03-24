@@ -1,4 +1,4 @@
-package managers;
+package main.java.managers;
 
 public abstract class Managers {
 
@@ -9,4 +9,5 @@ public abstract class Managers {
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
+
 }

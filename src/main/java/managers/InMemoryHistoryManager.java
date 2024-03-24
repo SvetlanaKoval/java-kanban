@@ -1,6 +1,6 @@
-package managers;
+package main.java.managers;
 
-import tasks.Task;
+import main.java.tasks.Task;
 
 import java.util.List;
 
@@ -15,11 +15,14 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        tasksHistory.removeNode(tasksHistory.getValue(id));
+        if (tasksHistory.contains(id)) {
+            tasksHistory.removeNode(tasksHistory.getValue(id));
+        }
     }
 
     @Override
     public List<Task> getHistory() {
         return tasksHistory.getTasks();
     }
+
 }

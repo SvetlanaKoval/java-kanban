@@ -1,6 +1,6 @@
-package managers;
+package main.java.managers;
 
-import tasks.Task;
+import main.java.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +75,10 @@ public class CustomLinkedList {
         size++;
     }
 
+    public boolean contains(int id) {
+        return tasksKeeper.containsKey(id);
+    }
+
     private static class Node<E> {
         E cur;
         Node<E> prev;
@@ -85,5 +89,7 @@ public class CustomLinkedList {
             this.cur = cur;
             this.next = next;
         }
+
     }
+
 }
