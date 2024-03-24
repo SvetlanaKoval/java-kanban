@@ -1,12 +1,13 @@
-package managers;
+package main.java.managers;
 
-import tasks.*;
+import main.java.tasks.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.TreeMap;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    public static final String FIELDS_NAME = "id,type,name,status,description,epic" + System.lineSeparator();
+    public static final String FIELDS_NAME = "id,type,name,status,description,duration,startTime,epic" + System.lineSeparator();
     private final File memory;
 
     public FileBackedTasksManager(File memory) {
@@ -67,8 +68,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     fileBackedTasksManager.loadHistoryTasks(tasksIdList);
                 }
             }
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -82,6 +81,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         taskData.add(task.getName());
         taskData.add(task.getStatus().toString());
         taskData.add(task.getDescription());
+        taskData.add(String.valueOf(task.getDuration().toMinutes()));
+        LocalDateTime startTime = task.getStartTime();
+        taskData.add(startTime != null ? startTime.toString() : null);
+
         if (task instanceof Subtask) {
             taskData.add(String.valueOf(((Subtask) task).getEpicId()));
         }
@@ -101,7 +104,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             case SUBTASK:
                 Subtask subtask = new Subtask();
                 setAllFields(subtask, taskData);
-                subtask.setEpicId(Integer.parseInt(taskData[5]));
+                subtask.setEpicId(Integer.parseInt(taskData[7]));
                 super.addSubtask(subtask);
                 return subtask;
             default:
@@ -117,6 +120,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         task.setName(taskData[2]);
         task.setStatus(Status.valueOf(taskData[3]));
         task.setDescription(taskData[4]);
+        task.setDuration(Long.parseLong(taskData[5]));
+        task.setStartTime(LocalDateTime.parse(taskData[7]));
     }
 
     private static String historyToString(HistoryManager manager) {
@@ -247,4 +252,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.removeTaskById(id);
         save();
     }
+
 }
