@@ -3,7 +3,6 @@ package main.java.managers;
 import main.java.tasks.Epic;
 import main.java.tasks.Subtask;
 import main.java.tasks.Task;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,26 +16,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class InMemoryHistoryManagerTest {
 
     private HistoryManager inMemoryHistoryManager;
-    private static TaskManager inMemoryTaskManager;
-    private static Task task1;
-    private static Task task2;
-    private static Task task3;
-    private static Task task4;
+    private TaskManager inMemoryTaskManager;
+    private Task task1;
+    private Task task2;
+    private Task task3;
+    private Task task4;
     private final Task task5 = new Task("testTask5", "task5task5task5", AVD_DURATION_TIME, "11:30 01.01.24");
 
-    private static Epic epic1;
-    private static Epic epic2;
-    private static Epic epic3;
+    private Epic epic1;
+    private Epic epic2;
+    private Epic epic3;
 
-    private static Subtask subtask1;
-    private static Subtask subtask2;
-    private static Subtask subtask3;
-    private static Subtask subtask4;
-    private static Subtask subtask5;
+    private Subtask subtask1;
+    private Subtask subtask2;
+    private Subtask subtask3;
+    private Subtask subtask4;
+    private Subtask subtask5;
 
-    @BeforeAll
-    public static void createTaskManager() {
+    @BeforeEach
+    public void createTaskManager() {
         inMemoryTaskManager = Managers.getDefault();
+        inMemoryHistoryManager = Managers.getDefaultHistory();
+
         task1 = new Task("task1", "task1task1task1", AVD_DURATION_TIME, "08:40 01.01.24");
         task2 = new Task("task2", "task2task2task2", AVD_DURATION_TIME, "09:00 01.01.24");
         task3 = new Task("task3", "task3task3task3", AVD_DURATION_TIME, "09:20 01.01.24");
@@ -45,6 +46,10 @@ class InMemoryHistoryManagerTest {
         inMemoryTaskManager.addTask(task2);
         inMemoryTaskManager.addTask(task3);
         inMemoryTaskManager.addTask(task4);
+        inMemoryHistoryManager.add(task1);
+        inMemoryHistoryManager.add(task2);
+        inMemoryHistoryManager.add(task3);
+        inMemoryHistoryManager.add(task4);
 
         epic1 = new Epic("epic1", "epic1epic1epic1");
         epic2 = new Epic("epic2", "epic2epic2epic2");
@@ -52,6 +57,9 @@ class InMemoryHistoryManagerTest {
         inMemoryTaskManager.addEpic(epic1);
         inMemoryTaskManager.addEpic(epic2);
         inMemoryTaskManager.addEpic(epic3);
+        inMemoryHistoryManager.add(epic1);
+        inMemoryHistoryManager.add(epic2);
+        inMemoryHistoryManager.add(epic3);
 
         subtask1 = new Subtask("subtask1", "subtask1subtask1subtask1", epic1.getId(), AVD_DURATION_TIME, "10:00 01.01.24");
         subtask2 = new Subtask("subtask2", "subtask2subtask2subtask2", epic1.getId(), AVD_DURATION_TIME, "10:20 01.01.24");
@@ -64,21 +72,9 @@ class InMemoryHistoryManagerTest {
         inMemoryTaskManager.addSubtask(subtask3);
         inMemoryTaskManager.addSubtask(subtask4);
         inMemoryTaskManager.addSubtask(subtask5);
-    }
-
-    @BeforeEach
-    public void createHistory() {
-        inMemoryHistoryManager = Managers.getDefaultHistory();
-        inMemoryHistoryManager.add(task3);
-        inMemoryHistoryManager.add(task2);
-        inMemoryHistoryManager.add(task1);
-        inMemoryHistoryManager.add(task4);
-        inMemoryHistoryManager.add(epic2);
-        inMemoryHistoryManager.add(epic1);
-        inMemoryHistoryManager.add(epic3);
         inMemoryHistoryManager.add(subtask1);
-        inMemoryHistoryManager.add(subtask3);
         inMemoryHistoryManager.add(subtask2);
+        inMemoryHistoryManager.add(subtask3);
         inMemoryHistoryManager.add(subtask4);
         inMemoryHistoryManager.add(subtask5);
     }
