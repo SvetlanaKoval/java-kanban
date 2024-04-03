@@ -225,25 +225,16 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
-        setEpicDuration(epic, subtasks);
-        setEpicStartTime(epic, subtasks);
-        setEpicEndTime(epic, subtasks);
+        setEpicTime(epic, subtasks);
     }
 
-    private void setEpicDuration(Epic epic, List<Subtask> subtasks) {
+    private void setEpicTime(Epic epic, List<Subtask> subtasks) {
         epic.setDuration(subtasks.stream()
                 .mapToLong(subtask -> subtask.getDuration().toMinutes())
                 .sum());
-    }
 
-    private void setEpicStartTime(Epic epic, List<Subtask> subtasks) {
-        getPrioritizedTime(subtasks, Task::getStartTime, Comparator.naturalOrder())
-                .ifPresent(epic::setStartTime);
-    }
-
-    private void setEpicEndTime(Epic epic, List<Subtask> subtasks) {
-        getPrioritizedTime(subtasks, Task::getEndTime, Comparator.reverseOrder())
-                .ifPresent(epic::setEndTime);
+        getPrioritizedTime(subtasks, Task::getStartTime, Comparator.naturalOrder()).ifPresent(epic::setStartTime);
+        getPrioritizedTime(subtasks, Task::getEndTime, Comparator.reverseOrder()).ifPresent(epic::setEndTime);
     }
 
     private Optional<LocalDateTime> getPrioritizedTime(List<Subtask> subtasks,
