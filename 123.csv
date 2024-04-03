@@ -1,0 +1,13 @@
+id,type,name,status,description,duration,startTime,epic
+1,TASK,task1,NEW,task1task1task1,15,2024-01-01T09:00
+2,TASK,task2,NEW,task2task2task2,15,2024-01-01T09:20
+3,TASK,task3,NEW,task3task3task3,15,2024-01-01T09:40
+4,TASK,task4,NEW,task4task4task4,15,null
+5,EPIC,epic1,NEW,epic1epic1epic1,45,2024-01-01T10:00
+6,EPIC,epic2,NEW,epic2epic2epic2,30,2024-01-01T11:00
+7,EPIC,epic3,NEW,epic3epic3epic3,0,null
+8,SUBTASK,subtask1,NEW,subtask1subtask1subtask1,15,2024-01-01T10:00,5
+9,SUBTASK,subtask2,NEW,subtask2subtask2subtask2,15,2024-01-01T10:20,5
+10,SUBTASK,subtask3,NEW,subtask3subtask3subtask3,15,2024-01-01T10:40,5
+11,SUBTASK,subtask4,NEW,subtask4subtask4subtask4,15,2024-01-01T11:00,6
+12,SUBTASK,subtask5,NEW,subtask5subtask5subtask5,15,null,6
