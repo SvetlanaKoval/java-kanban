@@ -1,8 +1,7 @@
-package main.java.managers;
+package managers;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.io.File;
 
 public class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {

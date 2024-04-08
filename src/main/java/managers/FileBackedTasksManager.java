@@ -1,7 +1,10 @@
-package main.java.managers;
+package managers;
 
-import main.java.tasks.*;
-
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.Type;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

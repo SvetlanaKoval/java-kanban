@@ -1,4 +1,4 @@
-package main.java.managers;
+package managers;
 
 public abstract class Managers {
 
