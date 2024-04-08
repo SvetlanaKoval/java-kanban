@@ -87,7 +87,6 @@ public class Task implements Comparable<Task> {
         this.startTime = startTime;
     }
 
-
     public LocalDateTime getEndTime() {
         if (startTime == null) {
             return null;
@@ -102,11 +101,15 @@ public class Task implements Comparable<Task> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Task task = (Task) o;
         return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description)
-                && status == task.status;
+            && status == task.status;
     }
 
     @Override
@@ -117,11 +120,11 @@ public class Task implements Comparable<Task> {
     @Override
     public String toString() {
         return "Task{" +
-                " name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+            " name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", id=" + id +
+            ", status=" + status +
+            '}';
     }
 
 }

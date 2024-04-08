@@ -33,8 +33,12 @@ public class Subtask extends Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Subtask subtask = (Subtask) o;
         return super.equals(o) && Objects.equals(epicId, subtask.epicId);
     }
@@ -47,12 +51,12 @@ public class Subtask extends Task {
     @Override
     public String toString() {
         return "Subtask{" +
-                " name='" + this.getName() + '\'' +
-                ", description='" + this.getDescription() + '\'' +
-                ", id=" + this.getId() +
-                ", status= " + this.getStatus() +
-                ", epicId= " + this.epicId +
-                '}';
+            " name='" + this.getName() + '\'' +
+            ", description='" + this.getDescription() + '\'' +
+            ", id=" + this.getId() +
+            ", status= " + this.getStatus() +
+            ", epicId= " + this.epicId +
+            '}';
     }
 
 }
