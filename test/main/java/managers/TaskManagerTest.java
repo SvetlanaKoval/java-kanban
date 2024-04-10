@@ -1,5 +1,6 @@
 package managers;
 
+import exceptions.TimeIntersectionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -124,7 +125,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         int expected = taskManager.getAllTasks().size();
         Task task5 = new Task("task5", "task5task5task5", AVD_DURATION_TIME, "09:50 01.01.24");
 
-        assertThrows(IllegalArgumentException.class, () -> taskManager.addTask(task5));
+        assertThrows(TimeIntersectionException.class, () -> taskManager.addTask(task5));
         assertEquals(expected, taskManager.getAllTasks().size());
     }
 
@@ -203,7 +204,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtaskByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.getSubtaskById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Subtask.class.getSimpleName(), 123),
+            exception.getMessage());
     }
 
     @Test
@@ -217,7 +219,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getTaskByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.getTaskById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Task.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -234,7 +236,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         nonExistentEpic.setId(123);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.updateEpic(nonExistentEpic));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Epic.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -252,7 +254,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         nonExistentTask.setId(123);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.updateTask(nonExistentTask));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Task.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -267,7 +269,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void removeEpicByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.removeEpicById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Epic.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -287,7 +289,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void removeTaskByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.removeTaskById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Task.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test

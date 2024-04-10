@@ -103,7 +103,7 @@ class SubtaskHandlerTest extends HttpHandlerTest {
     }
 
     @Test
-    public void deleteTaskTest() {
+    public void deleteSubtaskTest() {
         Subtask subtask1 = new Subtask("subtask1", "subtaskDescription1", 1, 10);
         createSubtask(subtask1);
         subtask1.setId(2);

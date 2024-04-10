@@ -1,12 +1,13 @@
 package httpserver;
 
 import com.sun.net.httpserver.HttpServer;
-import handlers.AbstractHttpHandler;
 import handlers.EpicHandler;
 import handlers.HistoryHandler;
 import handlers.PrioritizedHandler;
 import handlers.SubtaskHandler;
 import handlers.TaskHandler;
+import managers.Managers;
+import managers.TaskManager;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -15,12 +16,7 @@ public class HttpTaskServer {
     private final HttpServer httpServer;
 
     public HttpTaskServer() throws IOException {
-        this.httpServer = HttpServer.create(new InetSocketAddress(8080), 0);
-        httpServer.createContext("/tasks", new TaskHandler());
-        httpServer.createContext("/subtasks", new SubtaskHandler());
-        httpServer.createContext("/epic", new EpicHandler());
-        httpServer.createContext("/history", new HistoryHandler());
-        httpServer.createContext("/prioritized", new PrioritizedHandler());
+        httpServer = HttpServer.create(new InetSocketAddress(8080), 0);
     }
 
     public static void main(String[] args) throws IOException {
@@ -29,11 +25,16 @@ public class HttpTaskServer {
     }
 
     public void startServer() {
+        TaskManager taskManager = Managers.getDefault();
+        httpServer.createContext("/tasks", new TaskHandler(taskManager));
+        httpServer.createContext("/subtasks", new SubtaskHandler(taskManager));
+        httpServer.createContext("/epic", new EpicHandler(taskManager));
+        httpServer.createContext("/history", new HistoryHandler(taskManager));
+        httpServer.createContext("/prioritized", new PrioritizedHandler(taskManager));
         httpServer.start();
     }
 
     public void stopServer() {
-        AbstractHttpHandler.clearManager();
         httpServer.stop(1);
     }
 }

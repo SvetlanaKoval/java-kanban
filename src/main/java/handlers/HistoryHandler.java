@@ -1,26 +1,17 @@
 package handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import java.io.IOException;
-import java.io.OutputStream;
+import managers.TaskManager;
 
-public class HistoryHandler extends AbstractHttpHandler {
+public class HistoryHandler extends AbstractHandler {
+
+    public HistoryHandler(TaskManager taskManager) {
+        super(taskManager);
+    }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        String response;
-        if ("GET".equals(method)) {
-            response = new Gson().toJson(taskManager.getHistory());
-            exchange.sendResponseHeaders(200, 0);
-        } else {
-            response = "Метод " + method + " не доступен!";
-            exchange.sendResponseHeaders(405, 0);
-        }
-
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response.getBytes());
-        }
+    protected String getMethod(HttpExchange exchange) {
+        return gson.toJson(taskManager.getHistory());
     }
+
 }

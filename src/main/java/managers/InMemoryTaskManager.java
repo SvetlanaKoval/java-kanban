@@ -1,5 +1,7 @@
 package managers;
 
+import exceptions.TaskNotFoundException;
+import exceptions.TimeIntersectionException;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -82,7 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicById(int id) {
-        checkId(id, epics.keySet());
+        checkId(id, epics.keySet(), Epic.class.getSimpleName());
         Epic epic = epics.get(id);
         historyManager.add(epic);
         return epic;
@@ -90,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtaskById(int id) {
-        checkId(id, subtasks.keySet());
+        checkId(id, subtasks.keySet(), Subtask.class.getSimpleName());
         Subtask subtask = subtasks.get(id);
         historyManager.add(subtask);
         return subtask;
@@ -98,7 +100,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        checkId(id, tasks.keySet());
+        checkId(id, tasks.keySet(), Task.class.getSimpleName());
         Task task = tasks.get(id);
         historyManager.add(task);
         return task;
@@ -114,7 +116,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubtask(Subtask subtask) {
         checkTimeIntersection(subtask);
 
-        checkId(subtask.getEpicId(), epics.keySet());
         subtask.setId(subtask.getId() == null ? generateId() : subtask.getId());
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
@@ -134,15 +135,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
-        checkId(epic.getId(), epics.keySet());
+        checkId(epic.getId(), epics.keySet(), Epic.class.getSimpleName());
         epics.put(epic.getId(), epic);
         updatePrioritizedTasks();
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
-        checkId(subtask.getId(), subtasks.keySet());
-        checkId(subtask.getEpicId(), epics.keySet());
+        checkId(subtask.getId(), subtasks.keySet(), Subtask.class.getSimpleName());
+        checkId(subtask.getEpicId(), epics.keySet(), Epic.class.getSimpleName());
         subtasks.put(subtask.getId(), subtask);
         setEpicStatus(epics.get(subtask.getEpicId()));
         updatePrioritizedTasks();
@@ -150,14 +151,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        checkId(task.getId(), tasks.keySet());
+        checkId(task.getId(), tasks.keySet(), Task.class.getSimpleName());
         tasks.put(task.getId(), task);
         updatePrioritizedTasks();
     }
 
     @Override
     public Epic removeEpicById(int id) {
-        checkId(id, epics.keySet());
+        checkId(id, epics.keySet(), Epic.class.getSimpleName());
         Epic deletedEpic = epics.get(id);
         List<Integer> subtaskList = epics.get(id).getSubtasks();
         for (Integer subtaskId : subtaskList) {
@@ -172,7 +173,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask removeSubtaskById(int id) {
-        checkId(id, subtasks.keySet());
+        checkId(id, subtasks.keySet(), Subtask.class.getSimpleName());
         Subtask deletedSubtask = subtasks.get(id);
         int epicId = subtasks.get(id).getEpicId();
         Epic epic = epics.get(epicId);
@@ -186,7 +187,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task removeTaskById(int id) {
-        checkId(id, tasks.keySet());
+        checkId(id, tasks.keySet(), Task.class.getSimpleName());
         Task deletedTask = tasks.get(id);
         tasks.remove(id);
         historyManager.remove(id);
@@ -212,9 +213,9 @@ public class InMemoryTaskManager implements TaskManager {
             .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private void checkId(int id, Set<Integer> idSet) {
+    private void checkId(int id, Set<Integer> idSet, String className) {
         if (!idSet.contains(id)) {
-            throw new RuntimeException("Задача не найдена");
+            throw new TaskNotFoundException(className, String.valueOf(id));
         }
     }
 
@@ -271,7 +272,7 @@ public class InMemoryTaskManager implements TaskManager {
             .filter(t -> isIntersectionTask(task, t))
             .findAny()
             .ifPresent(t -> {
-                throw new IllegalArgumentException("Попытка добавить пересекающуюся задачу");
+                throw new TimeIntersectionException("Попытка добавить пересекающуюся задачу");
             });
     }
 
