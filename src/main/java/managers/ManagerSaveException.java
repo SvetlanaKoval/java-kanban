@@ -1,4 +1,4 @@
-package main.java.managers;
+package managers;
 
 public class ManagerSaveException extends RuntimeException {
 

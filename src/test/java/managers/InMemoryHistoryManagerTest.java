@@ -1,15 +1,13 @@
-package main.java.managers;
+package managers;
 
-import main.java.tasks.Epic;
-import main.java.tasks.Subtask;
-import main.java.tasks.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static main.java.managers.InMemoryTaskManagerTest.AVD_DURATION_TIME;
+import static managers.InMemoryTaskManagerTest.AVD_DURATION_TIME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -134,7 +132,7 @@ class InMemoryHistoryManagerTest {
         int historySizeBeforeRemove = inMemoryHistoryManager.getHistory().size();
         int expectedSizeAfterRemove = historySizeBeforeRemove - 1;
         int lastTaskInMemoryIndex = inMemoryHistoryManager.getHistory().
-                get(inMemoryHistoryManager.getHistory().size() - 1).getId();
+            get(inMemoryHistoryManager.getHistory().size() - 1).getId();
         inMemoryHistoryManager.remove(lastTaskInMemoryIndex);
         int resultSizeAfterRemove = inMemoryHistoryManager.getHistory().size();
         assertEquals(expectedSizeAfterRemove, resultSizeAfterRemove);
@@ -143,8 +141,8 @@ class InMemoryHistoryManagerTest {
     @Test
     public void checkEmptyHistory() {
         List<Integer> tasksId = inMemoryHistoryManager.getHistory().stream()
-                .map(Task::getId)
-                .collect(Collectors.toList());
+            .map(Task::getId)
+            .collect(Collectors.toList());
         tasksId.forEach(id -> inMemoryHistoryManager.remove(id));
         assertTrue(inMemoryHistoryManager.getHistory().isEmpty());
     }

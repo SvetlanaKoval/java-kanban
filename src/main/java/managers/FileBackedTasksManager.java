@@ -1,7 +1,10 @@
-package main.java.managers;
+package managers;
 
-import main.java.tasks.*;
-
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.Type;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -236,21 +239,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void removeEpicById(int id) {
-        super.removeEpicById(id);
+    public Epic removeEpicById(int id) {
+        Epic deletedEpic = super.removeEpicById(id);
         save();
+        return deletedEpic;
     }
 
     @Override
-    public void removeSubtaskById(int id) {
-        super.removeSubtaskById(id);
+    public Subtask removeSubtaskById(int id) {
+        Subtask deletedSubtask = super.removeSubtaskById(id);
         save();
+        return deletedSubtask;
     }
 
     @Override
-    public void removeTaskById(int id) {
-        super.removeTaskById(id);
+    public Task removeTaskById(int id) {
+        Task deletedTask = super.removeTaskById(id);
         save();
+        return deletedTask;
     }
 
 }

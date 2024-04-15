@@ -1,19 +1,24 @@
-package main.java.managers;
+package managers;
 
-import main.java.tasks.Epic;
-import main.java.tasks.Status;
-import main.java.tasks.Subtask;
-import main.java.tasks.Task;
+import exceptions.TimeIntersectionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
@@ -79,7 +84,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void setEpicStatusIfAllSubtasksDone() {
         taskManager.getSubtasksByEpic(epic1)
-                .forEach(subtask -> subtask.setStatus(Status.DONE));
+            .forEach(subtask -> subtask.setStatus(Status.DONE));
         taskManager.setEpicStatus(epic1);
         assertEquals(Status.DONE, epic1.getStatus());
     }
@@ -98,7 +103,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void setEpicStatusIfAllSubtasksInProgress() {
         taskManager.getSubtasksByEpic(epic1)
-                .forEach(subtask -> subtask.setStatus(Status.IN_PROGRESS));
+            .forEach(subtask -> subtask.setStatus(Status.IN_PROGRESS));
         taskManager.setEpicStatus(epic1);
         assertEquals(Status.IN_PROGRESS, epic1.getStatus());
     }
@@ -106,13 +111,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void checkEpicInSubtask() {
         taskManager.getAllSubtasks()
-                .forEach(subtask -> assertNotNull(subtask.getEpicId()));
+            .forEach(subtask -> assertNotNull(subtask.getEpicId()));
     }
 
     @Test
     public void checkEpicStatusExists() {
         taskManager.getAllEpics()
-                .forEach(epic -> assertNotNull(epic.getStatus()));
+            .forEach(epic -> assertNotNull(epic.getStatus()));
     }
 
     @Test
@@ -120,7 +125,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         int expected = taskManager.getAllTasks().size();
         Task task5 = new Task("task5", "task5task5task5", AVD_DURATION_TIME, "09:50 01.01.24");
 
-        assertThrows(IllegalArgumentException.class, () -> taskManager.addTask(task5));
+        assertThrows(TimeIntersectionException.class, () -> taskManager.addTask(task5));
         assertEquals(expected, taskManager.getAllTasks().size());
     }
 
@@ -145,9 +150,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void checkPrioritizedTasksSize() {
         List<Task> expected = Stream.concat(taskManager.getAllSubtasks().stream(), taskManager.getAllTasks().stream())
-                .filter(t -> t.getStartTime() != null)
-                .sorted()
-                .collect(Collectors.toList());
+            .filter(t -> t.getStartTime() != null)
+            .sorted()
+            .collect(Collectors.toList());
 
         List<Task> actual = new ArrayList<>(taskManager.getPrioritizedTasks());
 
@@ -199,7 +204,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtaskByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.getSubtaskById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Subtask.class.getSimpleName(), 123),
+            exception.getMessage());
     }
 
     @Test
@@ -213,7 +219,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getTaskByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.getTaskById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Task.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -230,7 +236,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         nonExistentEpic.setId(123);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.updateEpic(nonExistentEpic));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Epic.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -248,7 +254,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         nonExistentTask.setId(123);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.updateTask(nonExistentTask));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Task.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -263,7 +269,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void removeEpicByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.removeEpicById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Epic.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test
@@ -272,9 +278,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertTrue(taskManager.getSubtasksByEpic(epic3).isEmpty());
         taskManager.getHistory().stream()
-                .filter(t -> t instanceof Subtask)
-                .map(task -> (Subtask) task)
-                .forEach(subtask -> assertNotEquals(subtask.getEpicId(), epic3.getId()));
+            .filter(t -> t instanceof Subtask)
+            .map(task -> (Subtask) task)
+            .forEach(subtask -> assertNotEquals(subtask.getEpicId(), epic3.getId()));
 
         taskManager.getAllEpics().forEach(e -> assertNotEquals(e.getId(), epic3.getId()));
         taskManager.getHistory().forEach(e -> assertNotEquals(e.getId(), epic3.getId()));
@@ -283,7 +289,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void removeTaskByIdWhenNotExists() {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> taskManager.removeTaskById(123));
-        assertEquals("Задача не найдена", exception.getMessage());
+        assertEquals(String.format("%s %s не найдена", Task.class.getSimpleName(), 123), exception.getMessage());
     }
 
     @Test

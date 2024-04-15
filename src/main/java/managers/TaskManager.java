@@ -1,9 +1,8 @@
-package main.java.managers;
+package managers;
 
-import main.java.tasks.Epic;
-import main.java.tasks.Subtask;
-import main.java.tasks.Task;
-
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -39,11 +38,11 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    void removeEpicById(int id);
+    Epic removeEpicById(int id);
 
-    void removeSubtaskById(int id);
+    Subtask removeSubtaskById(int id);
 
-    void removeTaskById(int id);
+    Task removeTaskById(int id);
 
     List<Subtask> getSubtasksByEpic(Epic epic);
 
